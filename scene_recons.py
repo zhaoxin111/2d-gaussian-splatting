@@ -333,9 +333,9 @@ def get_depth_from_mesh_o3d(mesh_file, camera: DummyCamera, width, height):
     render = o3d.visualization.rendering.OffscreenRenderer(width, height)
     
     # 计算相机位置和朝向
-    cam_pos = -camera.R.T @ camera.t  # 相机在世界坐标系中的位置
-    cam_forward = camera.R.T @ np.array([0, 0, 1])  # 相机朝向
-    cam_up = camera.R.T @ np.array([0, -1, 0])  # 相机上方向
+    cam_pos = -camera.R @ camera.t  # 相机在世界坐标系中的位置
+    cam_forward = camera.R @ np.array([0, 0, 1])  # 相机朝向
+    cam_up = camera.R @ np.array([0, -1, 0])  # 相机上方向
     look_at_point = cam_pos + cam_forward  # 看向的点
     
     # 设置相机参数
