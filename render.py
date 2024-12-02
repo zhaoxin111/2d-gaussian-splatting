@@ -9,6 +9,7 @@
 # For inquiries contact  george.drettakis@inria.fr
 #
 
+import json
 import torch
 from scene import Scene
 import os
@@ -16,6 +17,7 @@ from tqdm import tqdm
 from os import makedirs
 from gaussian_renderer import render
 import torchvision
+from scene.cameras import Camera
 from utils.general_utils import safe_state
 from argparse import ArgumentParser
 from arguments import ModelParams, PipelineParams, get_combined_args
@@ -24,6 +26,29 @@ from utils.mesh_utils import GaussianExtractor, to_cam_open3d, post_process_mesh
 from utils.render_utils import generate_path, create_videos
 
 import open3d as o3d
+from typing import List
+
+def save_cam_traj(cam_list: List[Camera], save_path):
+    """
+    Save camera trajectory to a json file
+    """
+    cam_dicts = []  # Create a list to store all camera dictionaries
+    for idx, cam in enumerate(cam_list):
+        cam_dict = {
+            'rotation': cam.R.tolist(),
+            'position': cam.T.tolist(),
+            # 'fx': cam.f_x,
+            # 'fy': cam.f_y,
+            'width': cam.image_width,
+            'height': cam.image_height,
+            # 'img_name': '{0:05d}'.format(idx) + ".png"
+            'img_name': cam.image_name
+        }
+        cam_dicts.append(cam_dict)
+    
+    # Write all camera data at once
+    with open(save_path, 'w') as f:
+        json.dump(cam_dicts, f, indent=2)
 
 if __name__ == "__main__":
     # Set up command line argument parser
@@ -54,18 +79,23 @@ if __name__ == "__main__":
     
     train_dir = os.path.join(args.model_path, 'train', "ours_{}".format(scene.loaded_iter))
     test_dir = os.path.join(args.model_path, 'test', "ours_{}".format(scene.loaded_iter))
-    gaussExtractor = GaussianExtractor(gaussians, render, pipe, bg_color=bg_color)    
-    
+    gaussExtractor = GaussianExtractor(gaussians, render, pipe, bg_color=bg_color)  
+
+    print("save cam traj ...")
+    save_cam_traj(scene.getTrainCameras()+scene.getTestCameras(), os.path.join(args.model_path, 'cam_traj_all.json'))
+
     if not args.skip_train:
         print("export training images ...")
         os.makedirs(train_dir, exist_ok=True)
+        
         gaussExtractor.reconstruction(scene.getTrainCameras())
         gaussExtractor.export_image(train_dir)
         
-    
     if (not args.skip_test) and (len(scene.getTestCameras()) > 0):
         print("export rendered testing images ...")
         os.makedirs(test_dir, exist_ok=True)
+        # W2C
+        # save_cam_traj(scene.getTestCameras(), os.path.join(test_dir, 'cam_traj.json'))
         gaussExtractor.reconstruction(scene.getTestCameras())
         gaussExtractor.export_image(test_dir)
     
@@ -75,6 +105,7 @@ if __name__ == "__main__":
         traj_dir = os.path.join(args.model_path, 'traj', "ours_{}".format(scene.loaded_iter))
         os.makedirs(traj_dir, exist_ok=True)
         n_fames = 240
+        # cam_traj = scene.getTrainCameras()
         cam_traj = generate_path(scene.getTrainCameras(), n_frames=n_fames)
         gaussExtractor.reconstruction(cam_traj)
         gaussExtractor.export_image(traj_dir)

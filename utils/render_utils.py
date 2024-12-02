@@ -223,7 +223,7 @@ def create_videos(base_dir, input_dir, out_name, num_frames=480):
   video_kwargs = {
       'shape': shape[:2],
       'codec': 'h264',
-      'fps': 60,
+      'fps': 30,
       'crf': 18,
   }
   
