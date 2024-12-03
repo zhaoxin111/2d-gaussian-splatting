@@ -327,7 +327,7 @@ def get_depth_from_mesh_pyrender(mesh_file, camera: DummyCamera, width, height):
     return depth
 
 def get_depth_from_mesh_o3d(mesh_file, camera: DummyCamera, width, height):
-    os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+    #os.environ["PYOPENGL_PLATFORM"] = "osmesa"
     
     mesh = o3d.io.read_triangle_mesh(mesh_file)
     render = o3d.visualization.rendering.OffscreenRenderer(width, height)
@@ -349,8 +349,9 @@ def get_depth_from_mesh_o3d(mesh_file, camera: DummyCamera, width, height):
     render.scene.camera.set_projection(
         camera.FoVy * 180 / np.pi,  # FOV in degrees
         float(width) / height,       # aspect ratio
-        0.1,                         # near plane
-        100.0                        # far plane
+        camera.znear,                         # near plane
+        camera.zfar,                        # far plane
+        o3d.visualization.rendering.Camera.FovType.Vertical
     )
     
     # 添加mesh到场景
@@ -358,9 +359,11 @@ def get_depth_from_mesh_o3d(mesh_file, camera: DummyCamera, width, height):
     
     # 渲染深度图
     depth = render.render_to_depth_image()
-    depth = np.asarray(depth)
-    
-    return depth
+    depth_np = 1 - np.asarray(depth)
+    invalid_mask = depth_np==0
+    depth_np = camera.znear / depth_np
+    depth_np[invalid_mask] = 0
+    return depth_np
 
 def save_depth_vis(depth, save_path):
     depth_norm = (depth - depth.min()) / (depth.max() - depth.min())
@@ -390,7 +393,7 @@ if __name__ == "__main__":
     custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=0)
     world_cam = custom_cam_list[0][0]
     # indices = list(range(0, len(cam_info)//3, 20))
-    indices = [0]
+    indices = [0, 110, 220, 330]
     for cam_idx in tqdm(indices):
         custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=cam_idx)
         # print(custom_cam_list[0][0])
