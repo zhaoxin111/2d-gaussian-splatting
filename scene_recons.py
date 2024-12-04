@@ -259,16 +259,15 @@ def verify_depth_consistency(left_depth, right_depth, baseline, focal_length, th
     return consistency_mask
 
 
-def construct_camera_list(cam_info, baseline = 0.5, cam_idx=0):
-
+def construct_camera_list(cam_info, baseline = 0.5, cam_idx=0, scale=1):
     stereo_pair_list = []
     R1 = np.array(cam_info[cam_idx]["rotation"]) # cam2world
     t1 = np.array(cam_info[cam_idx]["position"]) # cam2world
     t1 = -R1.T @ t1 # world2cam
     
     w_ori, h_ori = cam_info[cam_idx]["width"], cam_info[cam_idx]["height"]
-    w, h = w_ori, h_ori
-    scale = w_ori / w
+    w, h = w_ori//scale, h_ori//scale
+    # scale = w_ori / w
     f_x = cam_info[cam_idx]["fx"] / scale
     f_y = cam_info[cam_idx]["fy"] / scale
     fovx, fovy = calculate_fov(w, h, f_x, f_y)
@@ -378,11 +377,11 @@ def save_depth_vis(depth, save_path):
     cv2.imwrite(save_path, depth_color)
 
 if __name__ == "__main__":
-    result_root = 'output/DJI_0019/pseudo_s1'
+    result_root = 'output/DJI_0019/pseudo_s2'
     camera_json_file = 'output/DJI_0019/cameras.json'
     model_path = 'output/DJI_0019/point_cloud/iteration_30000/point_cloud.ply'
     
-    SCALE = 1
+    SCALE = 2
     BASELINE = 0.7
     with open(camera_json_file, "r") as f:
         cam_info = json.load(f)
@@ -390,12 +389,12 @@ if __name__ == "__main__":
     intrinsics = load_intrinsics(cam_info[0], SCALE)
     
     sr = SceneReconstruction(result_root, intrinsics, model_path)
-    custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=0)
+    custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=0, scale=SCALE)
     world_cam = custom_cam_list[0][0]
     # indices = list(range(0, len(cam_info)//3, 20))
     indices = [0, 110, 220, 330]
     for cam_idx in tqdm(indices):
-        custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=cam_idx)
+        custom_cam_list = construct_camera_list(cam_info, baseline=BASELINE, cam_idx=cam_idx, scale=SCALE)
         # print(custom_cam_list[0][0])
         sr.generate_stable_pcd(custom_cam_list, world_cam)
     
