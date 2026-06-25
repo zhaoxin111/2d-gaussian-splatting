@@ -4,7 +4,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-def process_videos(videos_dir):
+def process_videos(videos_dir, fps):
     """
     处理指定目录下的视频文件
     
@@ -37,7 +37,7 @@ def process_videos(videos_dir):
             print(f"Processing video: {video_file}")
             # 运行colmap.sh处理视频
             try:
-                subprocess.run(["./colmap.sh", str(video_file), str(output_base_dir)], check=True)
+                subprocess.run(["./colmap.sh", str(video_file), str(output_base_dir), str(fps)], check=True)
             except subprocess.CalledProcessError as e:
                 print(f"Error processing video {video_file}: {e}")
                 continue
@@ -49,18 +49,18 @@ def process_videos(videos_dir):
 
 def main():
     # 检查命令行参数
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <videos_directory>")
+    if len(sys.argv) != 3:
+        print(f"Usage: {sys.argv[0]} <videos_directory> <FPS>")
         sys.exit(1)
     
     videos_dir = sys.argv[1]
-    
+    fps = sys.argv[2]
     # 检查目录是否存在
     if not os.path.isdir(videos_dir):
         print(f"Error: Directory '{videos_dir}' does not exist")
         sys.exit(1)
     
-    process_videos(videos_dir)
+    process_videos(videos_dir, fps)
 
 if __name__ == "__main__":
     main() 

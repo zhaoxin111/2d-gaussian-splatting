@@ -169,7 +169,6 @@ def generate_ellipse_path(poses: np.ndarray,
 
   return np.stack([viewmatrix(p - center, up, p) for p in positions])
 
-
 def generate_path(viewpoint_cameras, n_frames=480):
   c2ws = np.array([np.linalg.inv(np.asarray((cam.world_view_transform.T).cpu().numpy())) for cam in viewpoint_cameras])
   pose = c2ws[:,:3,:] @ np.diag([1, -1, -1, 1])

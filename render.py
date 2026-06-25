@@ -28,28 +28,6 @@ from utils.render_utils import generate_path, create_videos
 import open3d as o3d
 from typing import List
 
-def save_cam_traj(cam_list: List[Camera], save_path):
-    """
-    Save camera trajectory to a json file
-    """
-    cam_dicts = []  # Create a list to store all camera dictionaries
-    for idx, cam in enumerate(cam_list):
-        cam_dict = {
-            'rotation': cam.R.tolist(),
-            'position': cam.T.tolist(),
-            # 'fx': cam.f_x,
-            # 'fy': cam.f_y,
-            'width': cam.image_width,
-            'height': cam.image_height,
-            # 'img_name': '{0:05d}'.format(idx) + ".png"
-            'img_name': cam.image_name
-        }
-        cam_dicts.append(cam_dict)
-    
-    # Write all camera data at once
-    with open(save_path, 'w') as f:
-        json.dump(cam_dicts, f, indent=2)
-
 if __name__ == "__main__":
     # Set up command line argument parser
     parser = ArgumentParser(description="Testing script parameters")
@@ -82,7 +60,6 @@ if __name__ == "__main__":
     gaussExtractor = GaussianExtractor(gaussians, render, pipe, bg_color=bg_color)  
 
     print("save cam traj ...")
-    save_cam_traj(scene.getTrainCameras()+scene.getTestCameras(), os.path.join(args.model_path, 'cam_traj_all.json'))
 
     if not args.skip_train:
         print("export training images ...")

@@ -55,6 +55,9 @@ class ModelParams(ParamGroup):
         self.data_device = "cuda"
         self.eval = False
         self.render_items = ['RGB', 'Alpha', 'Normal', 'Depth', 'Edge', 'Curvature']
+        self._begin_ratio = 0.0 # 当前视频数据用于开始训练的位置比例
+        self._end_ratio = 1.0 # 当前视频数据用于结束训练的位置比例,若遇OOM可调整此参数减少场景范围
+        
         super().__init__(parser, "Loading Parameters", sentinel)
 
     def extract(self, args):

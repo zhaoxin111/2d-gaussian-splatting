@@ -267,6 +267,11 @@ if __name__ == "__main__":
     args.save_iterations.append(args.iterations)
     
     print("Optimizing " + args.model_path)
+    os.makedirs(args.model_path, exist_ok=True)
+
+    # Save the configuration arguments
+    with open(os.path.join(args.model_path, "cfg_args_all"), "w") as f:
+        f.write(str(args))
 
     # Initialize system state (RNG)
     safe_state(args.quiet)
