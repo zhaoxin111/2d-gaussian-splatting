@@ -1,6 +1,6 @@
 # 2D Gaussian Splatting for Geometrically Accurate Radiance Fields
 
-[Project page](https://surfsplatting.github.io/) | [Paper](https://arxiv.org/pdf/2403.17888) | [Video](https://www.youtube.com/watch?v=oaHCtB6yiKU) | [Surfel Rasterizer (CUDA)](https://github.com/hbb1/diff-surfel-rasterization) | [Surfel Rasterizer (Python)](https://colab.research.google.com/drive/1qoclD7HJ3-o0O1R8cvV3PxLhoDCMsH8W?usp=sharing) | [DTU+COLMAP (3.5GB)](https://drive.google.com/drive/folders/1SJFgt8qhQomHX55Q4xSvYE2C6-8tFll9) | [SIBR Viewer Pre-built for Windows](https://drive.google.com/file/d/1DRFrtFUfz27QvQKOWbYXbRS2o2eSgaUT/view?usp=sharing) | [Web Viewer](https://github.com/mkkellogg/GaussianSplats3D) <br>
+[Project page](https://surfsplatting.github.io/) | [Paper](https://arxiv.org/pdf/2403.17888) | [Video](https://www.youtube.com/watch?v=oaHCtB6yiKU) | [Surfel Rasterizer (CUDA)](https://github.com/hbb1/diff-surfel-rasterization) | [Surfel Rasterizer (Python)](https://colab.research.google.com/drive/1qoclD7HJ3-o0O1R8cvV3PxLhoDCMsH8W?usp=sharing) | [DTU+COLMAP (3.5GB)](https://drive.google.com/drive/folders/1SJFgt8qhQomHX55Q4xSvYE2C6-8tFll9) | [SIBR Viewer Pre-built for Windows](https://github.com/RongLiu-Leo/Gaussian-Splatting-Monitor/releases/download/v1.0/GS_Monitor.zip) | [Web Viewer](https://github.com/mkkellogg/GaussianSplats3D) <br>
 
 ![Teaser image](assets/teaser.jpg)
 
@@ -8,9 +8,10 @@ This repo contains the official implementation for the paper "2D Gaussian Splatt
 
 
 ## ⭐ New Features 
-- 2024/07/20: Web-based viewer [GaussianSplats3D](https://github.com/mkkellogg/GaussianSplats3D) also supports 2DGS. Thanks to [Mark Kellogg](https://github.com/mkkellogg)
+- 2025/12/19: Our work is featured in an in-depth blog post on [LearnOpenCV](https://learnopencv.com/)! Thanks to [Shubham Anand](https://www.linkedin.com/in/shubham-anand-91a10b211/).
+- 2024/07/20: Web-based viewer [GaussianSplats3D](https://github.com/mkkellogg/GaussianSplats3D) also supports 2DGS. Thanks to [Mark Kellogg](https://github.com/mkkellogg).
 - 2024/07/19: [Colab Notebook](https://github.com/atakan-topaloglu/2d_gaussian_splatting_colab) is supported! Thanks to [atakan-topaloglu](https://github.com/atakan-topaloglu)
-- 2024/06/10: [SIBR Viewer](https://github.com/RongLiu-Leo/2d-gaussian-splatting) is supported!
+- 2024/06/10: [SIBR Viewer](https://github.com/RongLiu-Leo/2d-gaussian-splatting) is supported! Thanks to [Rong](https://github.com/RongLiu-Leo/).
 - 2024/06/05: [Remote Viewer](https://github.com/hwanhuh/2D-GS-Viser-Viewer) based on Viser is supported! Thanks to [HwanHeo](https://github.com/hwanhuh).
 - 2024/05/30:  Fixed a bug related to unbounded meshing. The foreground mesh quality should now be consistent with the bounded mesh.
 - 2024/05/17: Improve training speed by 30%~40% through the [cuda operator fusing](https://github.com/hbb1/diff-surfel-rasterization/pull/7). Please update the diff-surfel-rasterization submodule if you have already installed it. 
@@ -23,13 +24,30 @@ Our key idea is to contract the space into a sphere and then perform **adaptive 
 
 ![visualization](assets/unbounded.gif)
 
+## 🎓 Community Resources & Tutorials
+
+- **gsplat library documentation** (official rasterization API reference)  
+  https://docs.gsplat.studio/main/apis/rasterization.html#id1
+
+- **GaussianSplats3D** – Popular WebGL/Three.js viewer with strong community support  
+  https://github.com/mkkellogg/GaussianSplats3D
+
+- **SuperSplat** – High-performance WebGPU viewer by PlayCanvas  
+  https://github.com/playcanvas/supersplat
+
+- **In-Depth Practitioner Guide** – Comprehensive tutorial on the full 2D Gaussian Splatting pipeline (theory to implementation) by Shubham Anand  
+  [LearnOpenCV Blog Post](https://learnopencv.com/2d-gaussian-splatting/)
+
+- **Diff-Surfel-Tracing** - A differentiable ray-tracing implementation built on the surfel representation by [xbillowy](https://github.com/xbillowy)
+   https://github.com/xbillowy/diff-surfel-tracing
+
 ## SIBR Viewer
 
 
 https://github.com/RongLiu-Leo/2d-gaussian-splatting/assets/102014841/b75dd9a7-e3ee-4666-99ff-8c9121ff66dc
 
 
-The Pre-built Viewer for Windows can be found [here](https://drive.google.com/file/d/1DRFrtFUfz27QvQKOWbYXbRS2o2eSgaUT/view?usp=sharing). If you use Ubuntu or want to check the viewer usage, please refer to [GS Monitor](https://github.com/RongLiu-Leo/Gaussian-Splatting-Monitor).
+The Pre-built Viewer for Windows can be found [here](https://github.com/RongLiu-Leo/Gaussian-Splatting-Monitor/releases/download/v1.0/GS_Monitor.zip). If you use Ubuntu or want to check the viewer usage, please refer to [GS Monitor](https://github.com/RongLiu-Leo/Gaussian-Splatting-Monitor).
 ### How to use
 Firstly open the viewer, 
 ```shell
@@ -103,6 +121,9 @@ python render.py -r 2 --depth_ratio 1 --skip_test --skip_train
 ```
 **Custom Dataset**: We use the same COLMAP loader as 3DGS, you can prepare your data following [here](https://github.com/graphdeco-inria/gaussian-splatting?tab=readme-ov-file#processing-your-own-scenes). 
 
+> [!WARNING] 
+> In our **preprocessed DTU dataset**, we store the mask in the alpha channel. When using the **DTU dataset** in the [gaussian-splatting repository](https://github.com/graphdeco-inria/gaussian-splatting), please note that the background may be masked. To train DTU with background, we have commented [these lines](https://github.com/hbb1/2d-gaussian-splatting/blob/df1f6c684cc4e41a34937fd45a7847260e9c6cd7/scene/cameras.py#L43C1-L48C38) out.
+
 ## Full evaluation
 We provide scripts to evaluate our method of novel view synthesis and geometric reconstruction.
 <details>
@@ -120,13 +141,8 @@ You can report either the numbers from the paper or from this implementation, as
 #### Novel View Synthesis
 For novel view synthesis on [MipNeRF360](https://jonbarron.info/mipnerf360/) (which also works for other colmap datasets), use
 ```bash
-python scripts/mipnerf_eval.py -m60 <path to the MipNeRF360 dataset>
+python scripts/m360_eval.py -m60 <path to the MipNeRF360 dataset>
 ```
-We provide <a> Evaluation Results (Pretrained, Images)</a>. 
-<details>
-<summary><span style="font-weight: bold;">Table Results</span></summary>
-
-</details>
 
 #### Geometry reconstruction
 For geometry reconstruction on DTU dataset, please download the preprocessed data from [Drive](https://drive.google.com/drive/folders/1SJFgt8qhQomHX55Q4xSvYE2C6-8tFll9) or [Hugging Face](https://huggingface.co/datasets/dylanebert/2DGS). You also need to download the ground truth [DTU point cloud](https://roboimagedata.compute.dtu.dk/?page_id=36). 
@@ -145,11 +161,12 @@ Chamfer distance on DTU dataset (lower is better)
 | Paper    | 0.48 | 0.91 | 0.39 | 0.39 | 1.01 | 0.83 | 0.81 | 1.36 | 1.27 | 0.76 | 0.70 | 1.40 | 0.40 | 0.76 | 0.52 | 0.80 |
 | Reproduce | 0.46 | 0.80 | 0.33 | 0.37 | 0.95 | 0.86 | 0.80 | 1.25 | 1.24 | 0.67 | 0.67 | 1.24 | 0.39 | 0.64 | 0.47 | 0.74 |
 </details>
-<br>
 
 For geometry reconstruction on TnT dataset, please download the preprocessed [TnT_data](https://huggingface.co/datasets/ZehaoYu/gaussian-opacity-fields/tree/main). You also need to download the ground truth [TnT_GT](https://www.tanksandtemples.org/download/), including ground truth point cloud, alignments and cropfiles.
 
-**Due to historical issue, you should use open3d==0.10.0 for evaluating TNT.**
+> [!IMPORTANT]  
+> Due to historical issue, you should use open3d==0.10.0 for evaluating TNT.
+
 ```bash
 # use open3d 0.18.0, skip metrics
 python scripts/tnt_eval.py --TNT_data <path to the preprocessed TNT dataset>   \
@@ -159,7 +176,6 @@ python scripts/tnt_eval.py --TNT_data <path to the preprocessed TNT dataset>   \
 python scripts/tnt_eval.py --TNT_data <path to the preprocessed TNT dataset>   \
      --TNT_GT <path to the official TNT evaluation dataset> --skip_training --skip_rendering
 ```
-We provide <a> Evaluation Results (Pretrained, Meshes)</a>. 
 <details>
 <summary><span style="font-weight: bold;">Table Results</span></summary>
 
@@ -169,7 +185,6 @@ F1 scores on TnT dataset (higher is better)
 |--------|--------|-------------|----------|--------|-------------|------------|------------|
 | Reproduce | 0.41  | 0.23      | 0.51   | 0.45 | 0.17      | 0.15      | 0.32 |
 </details>
-<br>
 
 
 ## FAQ
